@@ -1,14 +1,13 @@
-%{ 
-#define _POSIX_C_SOURCE 200809L
+%{
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include "parser.tab.h"
 
-extern int yylineno;
+int yylineno = 1;
 %}
 
-%option noyywrap nounput noinput caseless yylineno
+%option noyywrap nounput noinput caseless
 
 DIGIT      [0-9]
 LETTER     [A-Za-z]
@@ -54,7 +53,7 @@ WS         [ \t\r]+
 
 ^[ \t]*\*.*          { /* COBOL-style comment line */ }
 {WS}                 { /* ignore spaces/tabs */ }
-\n                   { /* yylineno is auto-maintained by flex */ }
+\n                   { yylineno++; }
 
 .                    {
                         fprintf(stderr, "Lexical error at line %d: unexpected character '%s'\n", yylineno, yytext);
